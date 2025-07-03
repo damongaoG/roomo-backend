@@ -1,0 +1,17 @@
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/security/JwtUtil.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/controller/ListingsController.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/RoomoBackendApplication.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/exception/ResourceNotFoundException.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/service/PropertyInformationService.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/dto/AuthResponse.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/controller/AuthController.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/dto/PropertyInformationRequest.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/security/JwtAuthenticationFilter.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/security/CustomUserDetailsService.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/entity/PropertyInformation.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/exception/GlobalExceptionHandler.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/dto/PropertyInformationResponse.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/config/SecurityConfig.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/service/impl/PropertyInformationServiceImpl.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/dto/AuthRequest.java
+/Users/damon/Desktop/roomo-backend/src/main/java/com/roomo/repository/PropertyInformationRepository.java
