@@ -1,35 +1,50 @@
 package com.roomo.controller;
 
-import com.roomo.dto.AuthRequest;
-import com.roomo.dto.AuthResponse;
-import com.roomo.security.JwtUtil;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
-    private final JwtUtil jwtUtil;
+    @GetMapping("/public")
+    public ResponseEntity<Map<String, String>> publicEndpoint() {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "This is a public endpoint. No authentication required.");
+        return ResponseEntity.ok(response);
+    }
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+    @GetMapping("/user-info")
+    public ResponseEntity<Map<String, Object>> getUserInfo(@AuthenticationPrincipal Jwt jwt) {
+        Map<String, Object> userInfo = new HashMap<>();
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
-        final String jwt = jwtUtil.generateToken(userDetails);
+        // Extract user information from JWT claims
+        userInfo.put("sub", jwt.getSubject());
+        userInfo.put("email", jwt.getClaimAsString("email"));
+        userInfo.put("name", jwt.getClaimAsString("name"));
+        userInfo.put("picture", jwt.getClaimAsString("picture"));
+        userInfo.put("scopes", jwt.getClaimAsString("scope"));
 
-        return ResponseEntity.ok(new AuthResponse(jwt));
+        userInfo.put("roles", jwt.getClaimAsStringList("https://roomo.com/roles"));
+
+        return ResponseEntity.ok(userInfo);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Map<String, Object>> getAuthStatus(@AuthenticationPrincipal Jwt jwt) {
+        Map<String, Object> status = new HashMap<>();
+        status.put("authenticated", jwt != null);
+        if (jwt != null) {
+            status.put("userId", jwt.getSubject());
+            status.put("expiresAt", jwt.getExpiresAt());
+        }
+        return ResponseEntity.ok(status);
     }
 }
