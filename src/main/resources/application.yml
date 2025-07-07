@@ -23,7 +23,7 @@ okta:
     # Replace with your Auth0 domain (e.g., https://your-domain.auth0.com/)
     issuer: https://dev-zziz4u00lzvpcrq5.us.auth0.com/
     # Replace with your API Identifier from Auth0
-    audience: https://dev-zziz4u00lzvpcrq5.us.auth0.com/api/v2/
+    audience: https://api.roomo.com
 
 server:
   port: 8080

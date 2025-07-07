@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .decoder(jwtDecoder())
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                                .jwtAuthenticationConverter(customJwtAuthenticationConverter())
                         )
                 )
                 .build();
@@ -68,7 +68,7 @@ public class SecurityConfig {
 
 
     @Bean
-    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+    public JwtAuthenticationConverter customJwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         // Auth0 sends scopes as a space-delimited string in the "scope" claim
         grantedAuthoritiesConverter.setAuthoritiesClaimName("scope");
