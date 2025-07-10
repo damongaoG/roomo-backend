@@ -16,6 +16,13 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
+  
+  # Multipart file upload configuration
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 5MB
 
 # Auth0/Okta OAuth2 Configuration
 okta:
@@ -24,6 +31,19 @@ okta:
     issuer: https://dev-zziz4u00lzvpcrq5.us.auth0.com/
     # Replace with your API Identifier from Auth0
     audience: https://api.roomo.com
+
+# Supabase Configuration
+supabase:
+  url: https://rvavffrowjxpqeifwdjs.supabase.co
+  anon-key: ${SUPABASE_ANON_KEY:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2YXZmZnJvd2p4cHFlaWZ3ZGpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEyNDYyMjEsImV4cCI6MjA2NjgyMjIyMX0.OaCKyBXqRYKVDUHM6YdRK9wFmjHYHbWggmCu3KOyceY}
+  storage:
+    bucket-name: roomo-images
+    max-file-size: 5242880  # 5MB in bytes
+    allowed-mime-types:
+      - image/jpeg
+      - image/png
+      - image/gif
+      - image/webp
 
 server:
   port: 8080
