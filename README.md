@@ -69,6 +69,15 @@ mvn clean compile
 
 If you encounter Lombok-related compilation errors with newer Java versions (e.g., Java 24), the project is already configured with the latest Lombok version (1.18.38) to ensure compatibility.
 
+## Environment Variables
+
+For the Auth0 Management API integration, you need to set the following environment variables:
+
+- `AUTH0_MANAGEMENT_CLIENT_ID` - The Client ID of your Auth0 Machine-to-Machine application
+- `AUTH0_MANAGEMENT_CLIENT_SECRET` - The Client Secret of your Auth0 Machine-to-Machine application
+
+You can set these as environment variables or create an `application-local.yml` file (gitignored) with your values.
+
 ## Running the Application
 
 ### Using Maven Spring Boot Plugin
@@ -104,6 +113,17 @@ All listing endpoints require a valid JWT token in the Authorization header: `Au
 - `POST /api/listings` - Create a new listing (Requires LISTER role)
 - `GET /api/listings/{id}` - Get a specific listing
 - `PUT /api/listings/{id}` - Update a listing (Requires LISTER role)
+
+### User Role Management (Requires Authentication)
+Endpoints for managing user roles after registration:
+
+- `POST /api/users/role` - Set user role (first time only)
+  - Request body: `{ "role": "lister" }` or `{ "role": "looker" }`
+  - Response: `{ "success": true, "message": "User role updated successfully", "userId": "auth0|123", "role": "lister" }`
+  - Note: Once a role is set, it cannot be changed via this endpoint
+  
+- `GET /api/users/role` - Get current user's role
+  - Response: `{ "success": true, "message": "User role retrieved successfully", "userId": "auth0|123", "role": "lister" }`
 
 ## Security Configuration
 

@@ -1,5 +1,7 @@
 package com.roomo.controller;
 
+import com.roomo.service.Auth0ManagementService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -12,7 +14,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
+
+    private final Auth0ManagementService auth0ManagementService;
 
     @GetMapping("/public")
     public ResponseEntity<Map<String, String>> publicEndpoint() {
@@ -33,6 +38,14 @@ public class AuthController {
         userInfo.put("scopes", jwt.getClaimAsString("scope"));
 
         userInfo.put("roles", jwt.getClaimAsStringList("https://roomo.com/roles"));
+
+        // Get user's app role from Management API
+        try {
+            String appRole = auth0ManagementService.getUserRole(jwt.getSubject());
+            userInfo.put("appRole", appRole);
+        } catch (Exception e) {
+            userInfo.put("appRole", null);
+        }
 
         return ResponseEntity.ok(userInfo);
     }

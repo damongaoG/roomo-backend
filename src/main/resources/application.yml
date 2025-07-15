@@ -32,6 +32,15 @@ okta:
     # Replace with your API Identifier from Auth0
     audience: https://api.roomo.com
 
+# Auth0 Management API Configuration
+auth0:
+  management:
+    domain: ${AUTH0_DOMAIN:dev-zziz4u00lzvpcrq5.us.auth0.com}
+    client-id: ${AUTH0_MANAGEMENT_CLIENT_ID}
+    client-secret: ${AUTH0_MANAGEMENT_CLIENT_SECRET}
+    audience: https://${auth0.management.domain}/api/v2/
+    token-cache-duration: 3600
+
 # Supabase Configuration
 supabase:
   url: https://rvavffrowjxpqeifwdjs.supabase.co
