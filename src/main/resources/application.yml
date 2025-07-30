@@ -1,13 +1,13 @@
 spring:
   application:
     name: roomo-backend
-  
+
   datasource:
     url: jdbc:postgresql://aws-0-ap-southeast-2.pooler.supabase.com:6543/postgres
     username: postgres.rvavffrowjxpqeifwdjs
     password: root
     driver-class-name: org.postgresql.Driver
-  
+
   jpa:
     hibernate:
       ddl-auto: validate
@@ -16,7 +16,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
-  
+
   # Multipart file upload configuration
   servlet:
     multipart:
@@ -36,8 +36,8 @@ okta:
 auth0:
   management:
     domain: ${AUTH0_DOMAIN:dev-zziz4u00lzvpcrq5.us.auth0.com}
-    client-id: ${AUTH0_MANAGEMENT_CLIENT_ID}
-    client-secret: ${AUTH0_MANAGEMENT_CLIENT_SECRET}
+    client-id: ${AUTH0_MANAGEMENT_CLIENT_ID:VQlYLDanTZRupm1IH1rzFugLvl6hR44d}
+    client-secret: ${AUTH0_MANAGEMENT_CLIENT_SECRET:q_uO8B9axZHqDutBwtq9dXci-yTHy0eWdkN4reev-87aqH-TdAZUXH4n6NF4ExLi}
     audience: https://${auth0.management.domain}/api/v2/
     token-cache-duration: 3600
 
@@ -60,4 +60,4 @@ server:
 logging:
   level:
     com.roomo: DEBUG
-    org.springframework.security: DEBUG 
+    org.springframework.security: DEBUG
