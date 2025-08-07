@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://aws-0-ap-southeast-2.pooler.supabase.com:6543/postgres
     username: postgres.rvavffrowjxpqeifwdjs
-    password: root
+    password: ruvbuf-bymcAg-degve8
     driver-class-name: org.postgresql.Driver
 
   jpa:
