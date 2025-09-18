@@ -2,8 +2,8 @@ package com.roomo.controller;
 
 import com.roomo.dto.UserRoleRequest;
 import com.roomo.dto.UserRoleResponse;
-import com.roomo.exception.RoleUpdateException;
-import com.roomo.service.Auth0ManagementService;
+import com.roomo.entity.User;
+import com.roomo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class UserRoleController {
 
-    private final Auth0ManagementService auth0ManagementService;
+    private final UserService userService;
 
 
     @PostMapping("/role")
@@ -35,21 +35,28 @@ public class UserRoleController {
         log.info("Updating role for user {} to {}", userId, role);
 
         try {
+            // Ensure user exists in local database
+            userService.createOrUpdateUser(jwt);
+
             // Check if user already has a role
-            String currentRole = auth0ManagementService.getUserRole(userId);
-            if (currentRole != null && !currentRole.isEmpty()) {
-                log.warn("User {} already has role: {}", userId, currentRole);
+            User.UserRole currentRole = userService.getUserRole(userId);
+            if (currentRole != null) {
+                String currentRoleStr = currentRole.name().toLowerCase();
+                log.warn("User {} already has role: {}", userId, currentRoleStr);
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body(UserRoleResponse.builder()
                                 .success(false)
-                                .message("User already has a role assigned: " + currentRole)
+                                .message("User already has a role assigned: " + currentRoleStr)
                                 .userId(userId)
-                                .role(currentRole)
+                                .role(currentRoleStr)
                                 .build());
             }
 
+            // Convert string role to enum
+            User.UserRole userRole = User.UserRole.valueOf(role.toUpperCase());
+
             // Update user role
-            auth0ManagementService.updateUserRole(userId, role);
+            userService.updateUserRole(userId, userRole);
 
             return ResponseEntity.ok(UserRoleResponse.builder()
                     .success(true)
@@ -58,7 +65,16 @@ public class UserRoleController {
                     .role(role)
                     .build());
 
-        } catch (RoleUpdateException e) {
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid role for user {}: {}", userId, role, e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(UserRoleResponse.builder()
+                            .success(false)
+                            .message("Invalid role: " + role)
+                            .userId(userId)
+                            .role(null)
+                            .build());
+        } catch (Exception e) {
             log.error("Failed to update role for user {}", userId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(UserRoleResponse.builder()
@@ -80,14 +96,18 @@ public class UserRoleController {
         String userId = jwt.getSubject();
 
         try {
-            String role = auth0ManagementService.getUserRole(userId);
+            // Ensure user exists in local database
+            userService.createOrUpdateUser(jwt);
 
-            if (role != null) {
+            User.UserRole userRole = userService.getUserRole(userId);
+
+            if (userRole != null) {
+                String roleStr = userRole.name().toLowerCase();
                 return ResponseEntity.ok(UserRoleResponse.builder()
                         .success(true)
                         .message("User role retrieved successfully")
                         .userId(userId)
-                        .role(role)
+                        .role(roleStr)
                         .build());
             } else {
                 return ResponseEntity.ok(UserRoleResponse.builder()
@@ -98,7 +118,7 @@ public class UserRoleController {
                         .build());
             }
 
-        } catch (RoleUpdateException e) {
+        } catch (Exception e) {
             log.error("Failed to get role for user {}", userId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(UserRoleResponse.builder()

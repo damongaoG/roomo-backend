@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://aws-0-ap-southeast-2.pooler.supabase.com:6543/postgres
     username: postgres.rvavffrowjxpqeifwdjs
-    password: dijmy4-sufcod-cicdoZ
+    password: kevKy5-rapdur-rushex
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -32,14 +32,6 @@ okta:
     # Replace with your API Identifier from Auth0
     audience: https://api.roomo.com
 
-# Auth0 Management API Configuration
-auth0:
-  management:
-    domain: ${AUTH0_DOMAIN:dev-zziz4u00lzvpcrq5.us.auth0.com}
-    client-id: ${AUTH0_MANAGEMENT_CLIENT_ID:VQlYLDanTZRupm1IH1rzFugLvl6hR44d}
-    client-secret: ${AUTH0_MANAGEMENT_CLIENT_SECRET:q_uO8B9axZHqDutBwtq9dXci-yTHy0eWdkN4reev-87aqH-TdAZUXH4n6NF4ExLi}
-    audience: https://${auth0.management.domain}/api/v2/
-    token-cache-duration: 3600
 
 # Supabase Configuration
 supabase:
@@ -61,3 +53,7 @@ logging:
   level:
     com.roomo: DEBUG
     org.springframework.security: DEBUG
+    org.springframework.security.oauth2: TRACE
+    org.springframework.security.oauth2.jwt: TRACE
+    org.springframework.security.web: DEBUG
+    org.springframework.security.authentication: DEBUG
