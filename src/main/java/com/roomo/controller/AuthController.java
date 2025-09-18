@@ -1,6 +1,8 @@
 package com.roomo.controller;
 
+import com.roomo.dto.UserInfoResponse;
 import com.roomo.entity.User;
+import com.roomo.exception.ResourceNotFoundException;
 import com.roomo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,28 +30,25 @@ public class AuthController {
     }
 
     @GetMapping("/user-info")
-    public ResponseEntity<Map<String, Object>> getUserInfo(@AuthenticationPrincipal Jwt jwt) {
-        Map<String, Object> userInfo = new HashMap<>();
+    public ResponseEntity<UserInfoResponse> getUserInfo(@AuthenticationPrincipal Jwt jwt) {
+      String userId = jwt.getSubject();
 
-        // Extract user information from JWT claims
-        userInfo.put("sub", jwt.getSubject());
-        userInfo.put("email", jwt.getClaimAsString("email"));
-        userInfo.put("name", jwt.getClaimAsString("name"));
-        userInfo.put("picture", jwt.getClaimAsString("picture"));
-        userInfo.put("scopes", jwt.getClaimAsString("scope"));
+      User user = userService.getUserByAuth0UserId(userId)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found with Auth0 ID: " + userId));
 
-        userInfo.put("roles", jwt.getClaimAsStringList("https://roomo.com/roles"));
+      UserInfoResponse response = UserInfoResponse.builder()
+        .id(user.getId())
+        .auth0UserId(user.getAuth0UserId())
+        .email(user.getEmail())
+        .name(user.getName())
+        .pictureUrl(user.getPictureUrl())
+        .role(user.getRole() != null ? user.getRole().name() : null)
+        .createdAt(user.getCreatedAt())
+        .updatedAt(user.getUpdatedAt())
+        .lastLoginAt(user.getLastLoginAt())
+        .build();
 
-      // Ensure user exists in local database and get role
-        try {
-          userService.createOrUpdateUser(jwt);
-          User.UserRole appRole = userService.getUserRole(jwt.getSubject());
-          userInfo.put("appRole", appRole != null ? appRole.name().toLowerCase() : null);
-        } catch (Exception e) {
-            userInfo.put("appRole", null);
-        }
-
-        return ResponseEntity.ok(userInfo);
+      return ResponseEntity.ok(response);
     }
 
     @GetMapping("/status")
