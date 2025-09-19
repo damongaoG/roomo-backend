@@ -49,6 +49,9 @@ public class User {
     @Column(name = "last_login_at")
     private LocalDateTime lastLoginAt;
 
+  @Column(name = "registration_step", length = 50)
+  private String registrationStep;
+
     public enum UserRole {
         LISTER,
         LOOKER

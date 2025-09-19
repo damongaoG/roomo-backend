@@ -46,6 +46,7 @@ public class AuthController {
         .createdAt(user.getCreatedAt())
         .updatedAt(user.getUpdatedAt())
         .lastLoginAt(user.getLastLoginAt())
+        .registrationStep(user.getRegistrationStep())
         .build();
 
       return ResponseEntity.ok(response);

@@ -36,15 +36,15 @@ public class UserServiceImpl implements UserService {
 
             if (email != null && !email.equals(user.getEmail())) {
                 user.setEmail(email);
-                
+
             }
             if (name != null && !name.equals(user.getName())) {
                 user.setName(name);
-                
+
             }
             if (pictureUrl != null && !pictureUrl.equals(user.getPictureUrl())) {
                 user.setPictureUrl(pictureUrl);
-                
+
             }
 
             // Update last login
@@ -113,4 +113,15 @@ public class UserServiceImpl implements UserService {
         userRepository.updateLastLoginAt(userId, LocalDateTime.now());
         log.debug("Updated last login for user: {}", userId);
     }
+
+  @Override
+  public User updateRegistrationStep(String userId, String registrationStep) {
+    User user = userRepository.findByAuth0UserId(userId)
+      .orElseThrow(() -> new ResourceNotFoundException("User not found with Auth0 ID: " + userId));
+
+    user.setRegistrationStep(registrationStep);
+    user = userRepository.save(user);
+    log.info("Updated registration step for user {} to {}", userId, registrationStep);
+    return user;
+  }
 }

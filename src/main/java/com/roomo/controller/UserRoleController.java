@@ -1,5 +1,7 @@
 package com.roomo.controller;
 
+import com.roomo.dto.RegistrationStepRequest;
+import com.roomo.dto.UserInfoResponse;
 import com.roomo.dto.UserRoleRequest;
 import com.roomo.dto.UserRoleResponse;
 import com.roomo.entity.User;
@@ -35,10 +37,8 @@ public class UserRoleController {
         log.info("Updating role for user {} to {}", userId, role);
 
         try {
-            // Ensure user exists in local database
             userService.createOrUpdateUser(jwt);
 
-            // Check if user already has a role
             User.UserRole currentRole = userService.getUserRole(userId);
             if (currentRole != null) {
                 String currentRoleStr = currentRole.name().toLowerCase();
@@ -52,10 +52,8 @@ public class UserRoleController {
                                 .build());
             }
 
-            // Convert string role to enum
             User.UserRole userRole = User.UserRole.valueOf(role.toUpperCase());
 
-            // Update user role
             userService.updateUserRole(userId, userRole);
 
             return ResponseEntity.ok(UserRoleResponse.builder()
@@ -86,9 +84,6 @@ public class UserRoleController {
         }
     }
 
-    /**
-     * Get the current user's role
-     */
     @GetMapping("/role")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserRoleResponse> getUserRole(@AuthenticationPrincipal Jwt jwt) {
@@ -96,7 +91,6 @@ public class UserRoleController {
         String userId = jwt.getSubject();
 
         try {
-            // Ensure user exists in local database
             userService.createOrUpdateUser(jwt);
 
             User.UserRole userRole = userService.getUserRole(userId);
@@ -129,4 +123,31 @@ public class UserRoleController {
                             .build());
         }
     }
+
+  @PatchMapping("/registration-step")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<UserInfoResponse> updateRegistrationStep(
+    @Valid @RequestBody RegistrationStepRequest request,
+    @AuthenticationPrincipal Jwt jwt
+  ) {
+    String userId = jwt.getSubject();
+    log.info("Updating registration step for user {}", userId);
+
+    User user = userService.updateRegistrationStep(userId, request.getRegistrationStep());
+
+    UserInfoResponse response = UserInfoResponse.builder()
+      .id(user.getId())
+      .auth0UserId(user.getAuth0UserId())
+      .email(user.getEmail())
+      .name(user.getName())
+      .pictureUrl(user.getPictureUrl())
+      .role(user.getRole() != null ? user.getRole().name() : null)
+      .createdAt(user.getCreatedAt())
+      .updatedAt(user.getUpdatedAt())
+      .lastLoginAt(user.getLastLoginAt())
+      .registrationStep(user.getRegistrationStep())
+      .build();
+
+    return ResponseEntity.ok(response);
+  }
 }

@@ -2,6 +2,7 @@ package com.roomo.service;
 
 import com.roomo.entity.User;
 import org.springframework.security.oauth2.jwt.Jwt;
+
 import java.util.Optional;
 
 public interface UserService {
@@ -62,4 +63,13 @@ public interface UserService {
    * @param userId The Auth0 user ID
    */
   void updateLastLogin(String userId);
+
+  /**
+   * Update user's registration step
+   *
+   * @param userId           Auth0 user ID
+   * @param registrationStep new registration step value
+   * @return updated user
+   */
+  User updateRegistrationStep(String userId, String registrationStep);
 }

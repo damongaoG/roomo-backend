@@ -18,6 +18,7 @@ public class UserInfoResponse {
   LocalDateTime createdAt;
   LocalDateTime updatedAt;
   LocalDateTime lastLoginAt;
+  String registrationStep;
 }
 
 
